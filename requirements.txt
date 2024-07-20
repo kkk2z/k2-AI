@@ -1,0 +1,5 @@
+torch
+transformers
+quart
+quart-cors
+requests
