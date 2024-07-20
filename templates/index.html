@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AIチャット</title>
+    <script>
+        async function sendMessage() {
+            const input = document.getElementById("userInput").value;
+            const response = await fetch('/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ input: input })
+            });
+            const data = await response.json();
+            document.getElementById("chatLog").innerHTML += `<p>User: ${input}</p><p>AI: ${data.response}</p>`;
+
+            if (data.response === 'その言葉は知りません。どういう意味ですか？') {
+                const newWord = prompt('新しい単語の意味を教えてください:');
+                await fetch('/learn', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ new_word: input, meaning: newWord })
+                });
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>AIチャット</h1>
+    <div id="chatLog"></div>
+    <input type="text" id="userInput" />
+    <button onclick="sendMessage()">送信</button>
+</body>
+</html>
